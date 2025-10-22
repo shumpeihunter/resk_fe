@@ -12,6 +12,7 @@ import {
   transcribeVideo
 } from "../services/api";
 import { parseScriptMarkdown } from "../utils/scriptParser";
+import { downloadScriptAsText } from "../utils/textDownload";
 
 const STORAGE_KEY = "reskiling_ai_workspace_state";
 
@@ -305,6 +306,19 @@ export const MainPage = () => {
     }
   };
 
+  const handleDownloadScript = () => {
+    try {
+      downloadScriptAsText(
+        sections.map((section) => ({
+          title: section.title,
+          body: section.body
+        }))
+      );
+    } catch (error) {
+      setBatchError(getErrorMessage(error));
+    }
+  };
+
   return (
     <main className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-8">
       <header className="flex flex-col gap-2 text-center">
@@ -356,6 +370,7 @@ export const MainPage = () => {
         isBatching={isBatching}
         batchError={batchError}
         batchZipUrl={batchZipUrl}
+        onDownloadScript={sections.length ? handleDownloadScript : undefined}
       />
     </main>
   );
